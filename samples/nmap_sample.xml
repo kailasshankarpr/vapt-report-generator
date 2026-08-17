@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<nmaprun scanner="nmap" args="nmap -sV --script vulners -p 22,80,443 192.168.1.50" version="7.94">
+  <host>
+    <status state="up"/>
+    <address addr="192.168.1.50" addrtype="ipv4"/>
+    <hostnames>
+      <hostname name="target.acme.com" type="user"/>
+    </hostnames>
+    <ports>
+      <port protocol="tcp" portid="22">
+        <state state="open"/>
+        <service name="ssh" product="OpenSSH" version="7.4"/>
+      </port>
+      <port protocol="tcp" portid="80">
+        <state state="open"/>
+        <service name="http" product="Apache httpd" version="2.4.29"/>
+        <script id="vulners" output="&#xa;  Apache httpd 2.4.29:&#xa;    CVE-2021-41773 7.5 https://vulners.com/cve/CVE-2021-41773&#xa;    CVE-2021-42013 7.5 https://vulners.com/cve/CVE-2021-42013&#xa;"/>
+      </port>
+      <port protocol="tcp" portid="443">
+        <state state="open"/>
+        <service name="https" product="nginx" version="1.18.0"/>
+      </port>
+    </ports>
+  </host>
+</nmaprun>

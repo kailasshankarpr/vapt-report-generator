@@ -1,0 +1,25 @@
+{
+  "title": "Vulnerability Assessment & Penetration Testing Report",
+  "client": "Acme Financial Corp",
+  "project": "Q2 Security Audit",
+  "overall_risk_score": 6.8,
+  "overall_risk_rating": "HIGH",
+  "security_health_grade": "D",
+  "findings": [
+    {
+      "id": "BURP-1001",
+      "fingerprint": "brokenobjectlevelauthorization(bola/idor)|https://api.acme.com/api/v1/users/1024/profile|id|",
+      "name": "Broken Object Level Authorization (BOLA / IDOR)",
+      "severity": "High",
+      "url": "https://api.acme.com/api/v1/users/1024/profile",
+      "parameter": "id"
+    },
+    {
+      "id": "OLD-SOLVED-01",
+      "fingerprint": "outdatedftpserver|192.168.1.50||",
+      "name": "Outdated vsftpd 2.3.4 FTP Server",
+      "severity": "High",
+      "url": "ftp://192.168.1.50:21"
+    }
+  ]
+}

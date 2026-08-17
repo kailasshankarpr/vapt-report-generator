@@ -1,0 +1,37 @@
+company:
+  name: "FlowGraph Security"
+  logo_url: "https://raw.githubusercontent.com/flowgraph-sec/assets/main/logo.png"
+  website: "https://flowgraph.security"
+  contact_email: "security@flowgraph.security"
+
+report:
+  title: "Vulnerability Assessment & Penetration Testing Report"
+  template: "executive_professional"
+  version: "1.0.0"
+  classification: "CONFIDENTIAL"
+  default_scope: "Web Application & Network Infrastructure"
+  default_methodology: "OWASP Testing Guide v4.2, PTES, NIST SP 800-115"
+
+severity_colors:
+  Critical: "#DC2626"   # Red-600
+  High: "#EA580C"       # Orange-600
+  Medium: "#D97706"     # Amber-600
+  Low: "#16A34A"        # Green-600
+  Info: "#2563EB"       # Blue-600
+
+sla_days:
+  Critical: 1
+  High: 7
+  Medium: 14
+  Low: 30
+  Info: 90
+
+compliance_frameworks:
+  - "PCI-DSS 4.0"
+  - "HIPAA Security Rule"
+  - "GDPR Article 32"
+  - "ISO/IEC 27001:2022"
+
+export:
+  default_format: "html"
+  supported_formats: ["html", "pdf", "docx", "json"]

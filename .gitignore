@@ -1,0 +1,25 @@
+# Virtual environments
+venv/
+.venv/
+env/
+.venvs/
+
+# Python cache & build files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+build/
+dist/
+*.egg-info/
+
+# Generated output files (keep templates & samples)
+output/
+*.log
+
+# OS & IDE metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

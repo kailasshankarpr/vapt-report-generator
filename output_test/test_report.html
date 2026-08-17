@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vulnerability Assessment &amp; Penetration Testing Report - Test Client</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg-dark: #080c14;
+  --bg-card: rgba(15, 23, 38, 0.85);
+  --bg-card-hover: rgba(25, 36, 56, 0.95);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(99, 102, 241, 0.3);
+  
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  
+  --primary: #6366f1;
+  --accent: #38bdf8;
+  
+  --severity-critical: #ff3b5c;
+  --severity-high: #ff8c00;
+  --severity-medium: #f59e0b;
+  --severity-low: #10b981;
+  --severity-info: #3b82f6;
+}
+
+body.light-theme {
+  --bg-dark: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f5f9;
+  --border-color: #e2e8f0;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-dim: #94a3b8;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  line-height: 1.6;
+  padding: 2rem;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* Header Banner */
+.header-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+.header-title h1 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header-title p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-top: 0.25rem;
+}
+
+.theme-toggle {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--primary);
+}
+
+/* Dashboard Cards */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.75rem;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
+}
+
+.card-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.grade-badge {
+  font-size: 3.8rem;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+  letter-spacing: -0.04em;
+}
+
+.grade-F { color: var(--severity-critical); filter: drop-shadow(0 0 12px rgba(255, 59, 92, 0.4)); }
+.grade-D { color: var(--severity-high); filter: drop-shadow(0 0 12px rgba(255, 140, 0, 0.4)); }
+.grade-C { color: var(--severity-medium); filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.4)); }
+.grade-B { color: var(--severity-low); filter: drop-shadow(0 0 12px rgba(16, 185, 129, 0.4)); }
+.grade-A { color: var(--severity-info); filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.4)); }
+
+.metric-val {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.03em;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 0.3rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.badge-critical { background-color: var(--severity-critical); box-shadow: 0 0 10px rgba(255, 59, 92, 0.3); }
+.badge-high { background-color: var(--severity-high); box-shadow: 0 0 10px rgba(255, 140, 0, 0.3); }
+.badge-medium { background-color: var(--severity-medium); box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+.badge-low { background-color: var(--severity-low); box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
+.badge-info { background-color: var(--severity-info); box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+th, td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+th {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+tr:hover {
+  background-color: var(--bg-card-hover);
+}
+
+/* Code PoC */
+pre {
+  background: #04060a;
+  color: #38bdf8;
+  padding: 1.25rem;
+  border-radius: 10px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.83rem;
+  border: 1px solid var(--border-color);
+}
+
+/* Print CSS */
+@media print {
+  body { background: #fff !important; color: #000 !important; padding: 0 !important; }
+  .theme-toggle, .filter-controls { display: none !important; }
+  .card, .header-banner { border: 1px solid #ccc !important; box-shadow: none !important; }
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header Banner -->
+    <header class="header-banner">
+      <div class="header-title">
+        <h1>Vulnerability Assessment &amp; Penetration Testing Report</h1>
+        <p><strong>Client:</strong> Test Client | <strong>Project:</strong> Security Assessment | <strong>Date:</strong> August 17, 2026</p>
+      </div>
+      <div>
+        <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Mode</button>
+      </div>
+    </header>
+
+    <!-- Executive Dashboard -->
+    <section>
+      <h2 style="margin-bottom: 1rem;">Executive Dashboard</h2>
+      <div class="dashboard-grid">
+        <div class="card" style="text-align: center;">
+          <div class="card-title">Security Health Grade</div>
+          <div class="grade-badge grade-F">F</div>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem;">Overall Rating: <strong>CRITICAL</strong></p>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Total Findings</div>
+          <div class="metric-val">4</div>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem;">
+            <span class="badge badge-critical">2 Critical</span>
+            <span class="badge badge-high">1 High</span>
+            <span class="badge badge-medium">0 Med</span>
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-title">CVSS Risk Score</div>
+          <div class="metric-val">10.0 <span style="font-size: 1rem; color: var(--text-muted);">/ 10</span></div>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem;">Weighted Technical & Impact Rating</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Compliance Readiness</div>
+          <div class="metric-val">
+            
+            60.0%
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem;">Cross-Framework Posture Average</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trend Analysis Section -->
+    
+
+    <!-- Compliance Posture Table -->
+    <section class="card" style="margin-bottom: 2rem;">
+      <h3 style="margin-bottom: 1rem;">Regulatory Compliance Posture</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Regulatory Standard</th>
+            <th>Violations Detected</th>
+            <th>Compliance Rating</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td><strong>PCI-DSS 4.0</strong></td>
+            <td>4</td>
+            <td>
+              <div style="width: 100%; background: var(--border-color); height: 8px; border-radius: 4px; overflow: hidden;">
+                <div style="width: 60.0%; background: var(--severity-critical); height: 100%;"></div>
+              </div>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">60.0% Pass</span>
+            </td>
+            <td>
+              <span class="badge badge-critical">NON-COMPLIANT</span>
+            </td>
+          </tr>
+          
+          <tr>
+            <td><strong>HIPAA</strong></td>
+            <td>4</td>
+            <td>
+              <div style="width: 100%; background: var(--border-color); height: 8px; border-radius: 4px; overflow: hidden;">
+                <div style="width: 60.0%; background: var(--severity-critical); height: 100%;"></div>
+              </div>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">60.0% Pass</span>
+            </td>
+            <td>
+              <span class="badge badge-critical">NON-COMPLIANT</span>
+            </td>
+          </tr>
+          
+          <tr>
+            <td><strong>GDPR</strong></td>
+            <td>4</td>
+            <td>
+              <div style="width: 100%; background: var(--border-color); height: 8px; border-radius: 4px; overflow: hidden;">
+                <div style="width: 60.0%; background: var(--severity-critical); height: 100%;"></div>
+              </div>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">60.0% Pass</span>
+            </td>
+            <td>
+              <span class="badge badge-critical">NON-COMPLIANT</span>
+            </td>
+          </tr>
+          
+          <tr>
+            <td><strong>ISO 27001</strong></td>
+            <td>4</td>
+            <td>
+              <div style="width: 100%; background: var(--border-color); height: 8px; border-radius: 4px; overflow: hidden;">
+                <div style="width: 60.0%; background: var(--severity-critical); height: 100%;"></div>
+              </div>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">60.0% Pass</span>
+            </td>
+            <td>
+              <span class="badge badge-critical">NON-COMPLIANT</span>
+            </td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Executive Summary Text -->
+    <section class="card" style="margin-bottom: 2rem;">
+      <h3 style="margin-bottom: 0.75rem;">Executive Summary</h3>
+      <p style="white-space: pre-line;">During the security assessment conducted for Test Client under project &#39;Security Assessment&#39;, a total of 4 unique security vulnerabilities were identified across the target scope.
+
+Overall Security Posture Rating: CRITICAL (Health Grade: F)
+Breakdown: 2 Critical, 1 High, 0 Medium, 1 Low, and 0 Informational issues.
+
+Immediate executive intervention is strongly advised to address high-severity vulnerabilities before production exposure.</p>
+    </section>
+
+    <!-- Findings Section -->
+    <section style="margin-bottom: 2rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2>Detailed Findings (4)</h2>
+        <div class="filter-controls">
+          <input type="text" id="searchInput" placeholder="Search findings..." onkeyup="filterFindings()" style="padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);">
+        </div>
+      </div>
+
+      
+      <div class="card finding-card" data-severity="critical" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+          <div>
+            <span class="badge badge-critical">Critical</span>
+            <span class="badge" style="background: #475569; margin-left: 0.25rem;">CVSS 9.5</span>
+            <span class="badge" style="background: #334155; margin-left: 0.25rem;">New</span>
+            <h3 style="margin-top: 0.5rem;">SQL Injection in Search Query Parameter</h3>
+          </div>
+          <div style="text-align: right; font-size: 0.85rem; color: var(--text-muted);">
+            <div>SLA: <strong>Immediate (within 24 hours)</strong></div>
+            <div>Scanner: Burp Suite Professional</div>
+          </div>
+        </div>
+
+        <p style="margin-bottom: 1rem; font-size: 0.95rem;">Database error &#39;syntax error near OR 1=1&#39; was returned, and arbitrary database extraction was demonstrated.
+
+Parameter &#39;q&#39; is concatenated directly into SQL queries without sanitization.</p>
+
+        <div style="background: var(--bg-card-hover); padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1rem;">
+          <div><strong>URL / Location:</strong> <code>https://app.acme.com/search.php?q=test&#39; OR 1=1--</code></div>
+          <div><strong>Parameter:</strong> <code>q</code></div>
+          <div><strong>OWASP 2025:</strong> A05:2025 - Injection</div>
+          <div><strong>MITRE ATT&CK:</strong> T1059 - Command and Scripting Interpreter, T1190 - Exploit Public-Facing Application</div>
+        </div>
+
+        
+
+        <div>
+          <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Remediation Recommendation</h4>
+          <p style="font-size: 0.9rem; color: #38bdf8; background: rgba(56, 189, 248, 0.1); padding: 0.75rem; border-radius: 6px; border-left: 3px solid #38bdf8;">
+            Use parameterized SQL queries (prepared statements) for all database operations.
+          </p>
+        </div>
+      </div>
+      
+      <div class="card finding-card" data-severity="critical" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+          <div>
+            <span class="badge badge-critical">Critical</span>
+            <span class="badge" style="background: #475569; margin-left: 0.25rem;">CVSS 9.1</span>
+            <span class="badge" style="background: #334155; margin-left: 0.25rem;">New</span>
+            <h3 style="margin-top: 0.5rem;">AWS EC2 Instance Metadata SSRF Leak</h3>
+          </div>
+          <div style="text-align: right; font-size: 0.85rem; color: var(--text-muted);">
+            <div>SLA: <strong>Immediate (within 24 hours)</strong></div>
+            <div>Scanner: Nuclei Vulnerability Scanner</div>
+          </div>
+        </div>
+
+        <p style="margin-bottom: 1rem; font-size: 0.95rem;">Server-Side Request Forgery allows accessing AWS IMDSv1 internal endpoint at http://169.254.169.254/latest/meta-data/</p>
+
+        <div style="background: var(--bg-card-hover); padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1rem;">
+          <div><strong>URL / Location:</strong> <code>https://api.acme.com/proxy?url=http://169.254.169.254/latest/meta-data/iam/security-credentials/</code></div>
+          
+          <div><strong>OWASP 2025:</strong> A01:2025 - Broken Access Control</div>
+          <div><strong>MITRE ATT&CK:</strong> T1557 - Adversary-in-the-Middle, T1046 - Network Service Discovery</div>
+        </div>
+
+        
+        <div style="margin-bottom: 1rem;">
+          <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Proof of Concept / Evidence</h4>
+          <pre><code>Curl Command:
+curl -X GET &#39;https://api.acme.com/proxy?url=http://169.254.169.254/latest/meta-data/iam/security-credentials/&#39;
+
+Extracted Findings:
+AccessKeyId: ASIAIOSFODNN7EXAMPLE, SecretAccessKey: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY</code></pre>
+        </div>
+        
+
+        <div>
+          <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Remediation Recommendation</h4>
+          <p style="font-size: 0.9rem; color: #38bdf8; background: rgba(56, 189, 248, 0.1); padding: 0.75rem; border-radius: 6px; border-left: 3px solid #38bdf8;">
+            Enforce IMDSv2 and restrict outbound HTTP requests to internal cloud metadata endpoints.
+          </p>
+        </div>
+      </div>
+      
+      <div class="card finding-card" data-severity="high" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+          <div>
+            <span class="badge badge-high">High</span>
+            <span class="badge" style="background: #475569; margin-left: 0.25rem;">CVSS 7.5</span>
+            <span class="badge" style="background: #334155; margin-left: 0.25rem;">New</span>
+            <h3 style="margin-top: 0.5rem;">Broken Object Level Authorization (BOLA / IDOR)</h3>
+          </div>
+          <div style="text-align: right; font-size: 0.85rem; color: var(--text-muted);">
+            <div>SLA: <strong>High Priority (within 7 days)</strong></div>
+            <div>Scanner: Burp Suite Professional</div>
+          </div>
+        </div>
+
+        <p style="margin-bottom: 1rem; font-size: 0.95rem;">By modifying the user ID parameter from 1024 to 1025, the application returns sensitive PII records of another tenant user without authentication errors.
+
+The application fails to enforce object-level authorization checks when accessing user profiles via numeric ID parameters.</p>
+
+        <div style="background: var(--bg-card-hover); padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1rem;">
+          <div><strong>URL / Location:</strong> <code>https://api.acme.com/api/v1/users/1024/profile</code></div>
+          <div><strong>Parameter:</strong> <code>id</code></div>
+          <div><strong>OWASP 2025:</strong> A01:2025 - Broken Access Control</div>
+          <div><strong>MITRE ATT&CK:</strong> T1059 - Command and Scripting Interpreter, T1068 - Exploitation for Privilege Escalation, T1190 - Exploit Public-Facing Application, T1110 - Brute Force, T1078 - Valid Accounts, T1083 - File and Directory Discovery</div>
+        </div>
+
+        
+
+        <div>
+          <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Remediation Recommendation</h4>
+          <p style="font-size: 0.9rem; color: #38bdf8; background: rgba(56, 189, 248, 0.1); padding: 0.75rem; border-radius: 6px; border-left: 3px solid #38bdf8;">
+            Enforce server-side authorization checks on all REST endpoints.
+
+Implement proper access control checks validating that the authenticated user owns the requested object ID.
+          </p>
+        </div>
+      </div>
+      
+      <div class="card finding-card" data-severity="low" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+          <div>
+            <span class="badge badge-low">Low</span>
+            <span class="badge" style="background: #475569; margin-left: 0.25rem;">CVSS 3.4</span>
+            <span class="badge" style="background: #334155; margin-left: 0.25rem;">New</span>
+            <h3 style="margin-top: 0.5rem;">Missing Strict-Transport-Security (HSTS) Header</h3>
+          </div>
+          <div style="text-align: right; font-size: 0.85rem; color: var(--text-muted);">
+            <div>SLA: <strong>Low Priority (within 30 days)</strong></div>
+            <div>Scanner: Nuclei Vulnerability Scanner</div>
+          </div>
+        </div>
+
+        <p style="margin-bottom: 1rem; font-size: 0.95rem;">HTTP Strict Transport Security header is missing, allowing potential Man-in-the-Middle SSL stripping attacks.</p>
+
+        <div style="background: var(--bg-card-hover); padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1rem;">
+          <div><strong>URL / Location:</strong> <code>https://app.acme.com</code></div>
+          
+          <div><strong>OWASP 2025:</strong> A04:2025 - Cryptographic Failures</div>
+          <div><strong>MITRE ATT&CK:</strong> T1190 - Exploit Public-Facing Application</div>
+        </div>
+
+        
+
+        <div>
+          <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Remediation Recommendation</h4>
+          <p style="font-size: 0.9rem; color: #38bdf8; background: rgba(56, 189, 248, 0.1); padding: 0.75rem; border-radius: 6px; border-left: 3px solid #38bdf8;">
+            Configure HTTP Strict-Transport-Security response header with max-age &gt;= 31536000 and includeSubDomains.
+          </p>
+        </div>
+      </div>
+      
+    </section>
+
+    <!-- Footer -->
+    <footer style="text-align: center; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+      <p>Generated by VAPT Report Generator Engine v1.0.0 | Confidential Security Report</p>
+    </footer>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      document.body.classList.toggle('light-theme');
+    }
+
+    function filterFindings() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.finding-card');
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(q) ? 'block' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

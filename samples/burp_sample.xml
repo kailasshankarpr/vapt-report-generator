@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues burpVersion="2024.5.1">
+  <issue>
+    <serialNumber>BURP-1001</serialNumber>
+    <type>1048576</type>
+    <name>Broken Object Level Authorization (BOLA / IDOR)</name>
+    <host ip="192.168.1.50">https://api.acme.com</host>
+    <path>/api/v1/users/1024/profile</path>
+    <location>https://api.acme.com/api/v1/users/1024/profile</location>
+    <severity>High</severity>
+    <confidence>Certain</confidence>
+    <issueBackground>The application fails to enforce object-level authorization checks when accessing user profiles via numeric ID parameters.</issueBackground>
+    <remediationBackground>Implement proper access control checks validating that the authenticated user owns the requested object ID.</remediationBackground>
+    <issueDetail>By modifying the user ID parameter from 1024 to 1025, the application returns sensitive PII records of another tenant user without authentication errors.</issueDetail>
+    <remediationDetail>Enforce server-side authorization checks on all REST endpoints.</remediationDetail>
+    <cweId>639</cweId>
+    <parameter>id</parameter>
+    <method>GET</method>
+    <requestresponse>
+      <request base64="true">R0VUUCAvYXBpL3YxL3VzZXJzLzEwMjUvcHJvZmlsZSBIVFRQLzEuMQ0KSG9zdDogYXBpLmFjbWUuY29tDQpBdXRob3JpemF0aW9uOiBCZWFyZXIgZXlKaGJHY2lPaUpTVXpBO...=</request>
+      <response base64="true">SFRUUC8xLjEgMjAwIE9LDQpDb250ZW50LVR5cGU6IGFwcGxpY2F0aW9uL2pzb24NCg0KeyJ1c2VyX2lkIjoxMDI1LCJlbWFpbCI6InZpY3RpbUBhY21lLmNvbSIsImFkZHJlc3MiOiIxMjMgTWFpbiBTdCJ9</response>
+    </requestresponse>
+  </issue>
+  <issue>
+    <serialNumber>BURP-1002</serialNumber>
+    <type>1048577</type>
+    <name>SQL Injection in Search Query Parameter</name>
+    <host ip="192.168.1.50">https://app.acme.com</host>
+    <path>/search.php</path>
+    <location>https://app.acme.com/search.php?q=test' OR 1=1--</location>
+    <severity>Critical</severity>
+    <confidence>Certain</confidence>
+    <issueBackground>Parameter 'q' is concatenated directly into SQL queries without sanitization.</issueBackground>
+    <remediationBackground>Use parameterized SQL queries (prepared statements) for all database operations.</remediationBackground>
+    <issueDetail>Database error 'syntax error near OR 1=1' was returned, and arbitrary database extraction was demonstrated.</issueDetail>
+    <cweId>89</cweId>
+    <parameter>q</parameter>
+    <method>GET</method>
+  </issue>
+</issues>

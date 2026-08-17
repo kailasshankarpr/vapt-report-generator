@@ -1,0 +1,396 @@
+{
+  "title": "Vulnerability Assessment & Penetration Testing Report",
+  "client": "Test Client",
+  "project": "Security Assessment",
+  "scope": "Perimeter & Web Application Scope",
+  "methodology": "OWASP Testing Guide v4.2, PTES, NIST SP 800-115",
+  "generated_at": "2026-08-17T23:32:01.058584",
+  "generated_by": "VAPT Report Generator Engine",
+  "report_version": "1.0.0",
+  "overall_risk_rating": "CRITICAL",
+  "overall_risk_score": 10.0,
+  "security_health_grade": "F",
+  "statistics": {
+    "total_vulnerabilities": 4,
+    "by_severity": {
+      "Critical": 2,
+      "High": 1,
+      "Medium": 0,
+      "Low": 1,
+      "Info": 0
+    },
+    "by_status": {
+      "New": 4,
+      "Recurring": 0,
+      "Resolved": 0,
+      "Regressed": 0
+    },
+    "by_owasp": {
+      "A05:2025 - Injection": 1,
+      "A01:2025 - Broken Access Control": 2,
+      "A04:2025 - Cryptographic Failures": 1
+    }
+  },
+  "compliance_summary": {
+    "PCI-DSS 4.0": {
+      "violations_count": 4,
+      "compliance_score": 60.0,
+      "status": "NON-COMPLIANT"
+    },
+    "HIPAA": {
+      "violations_count": 4,
+      "compliance_score": 60.0,
+      "status": "NON-COMPLIANT"
+    },
+    "GDPR": {
+      "violations_count": 4,
+      "compliance_score": 60.0,
+      "status": "NON-COMPLIANT"
+    },
+    "ISO 27001": {
+      "violations_count": 4,
+      "compliance_score": 60.0,
+      "status": "NON-COMPLIANT"
+    }
+  },
+  "trend_summary": {},
+  "executive_summary": "During the security assessment conducted for Test Client under project 'Security Assessment', a total of 4 unique security vulnerabilities were identified across the target scope.\n\nOverall Security Posture Rating: CRITICAL (Health Grade: F)\nBreakdown: 2 Critical, 1 High, 0 Medium, 1 Low, and 0 Informational issues.\n\nImmediate executive intervention is strongly advised to address high-severity vulnerabilities before production exposure.",
+  "key_findings": [
+    "[Critical] SQL Injection in Search Query Parameter at https://app.acme.com/search.php?q=test' OR 1=1--",
+    "[Critical] AWS EC2 Instance Metadata SSRF Leak at https://api.acme.com/proxy?url=http://169.254.169.254/latest/meta-data/iam/security-credentials/",
+    "[High] Broken Object Level Authorization (BOLA / IDOR) at https://api.acme.com/api/v1/users/1024/profile"
+  ],
+  "recommendations": [
+    "Establish automated patch management for application dependencies and host operating systems.",
+    "Enforce server-side authorization checks on all REST endpoints.\n\nImplement proper access control checks validating that the authenticated user owns the requested object ID.",
+    "Use parameterized SQL queries (prepared statements) for all database operations.",
+    "Configure HTTP Strict-Transport-Security response header with max-age >= 31536000 and includeSubDomains.",
+    "Perform quarterly penetration testing and maintain continuous vulnerability monitoring.",
+    "Implement modern multi-factor authentication (MFA) and granular role-based access control (RBAC).",
+    "Enforce strict input validation, parameterized queries, and output encoding across all endpoints.",
+    "Enforce IMDSv2 and restrict outbound HTTP requests to internal cloud metadata endpoints."
+  ],
+  "findings": [
+    {
+      "id": "BURP-1002",
+      "fingerprint": "faffba2addf5f477",
+      "name": "SQL Injection in Search Query Parameter",
+      "description": "Database error 'syntax error near OR 1=1' was returned, and arbitrary database extraction was demonstrated.\n\nParameter 'q' is concatenated directly into SQL queries without sanitization.",
+      "severity": "Critical",
+      "confidence": "Certain",
+      "cvss_score": 9.5,
+      "cvss_vector": null,
+      "cve_ids": [],
+      "cwe_ids": [
+        "CWE-89"
+      ],
+      "url": "https://app.acme.com/search.php?q=test' OR 1=1--",
+      "host": "https://app.acme.com",
+      "port": null,
+      "parameter": "q",
+      "method": "GET",
+      "payload": null,
+      "proof_of_concept": null,
+      "remediation": "Use parameterized SQL queries (prepared statements) for all database operations.",
+      "references": [],
+      "owasp_category": "A05:2025 - Injection",
+      "owasp_2021_category": "A03:2021 - Injection",
+      "mitre_tactics": [
+        "Initial Access",
+        "Execution"
+      ],
+      "mitre_techniques": [
+        "T1059 - Command and Scripting Interpreter",
+        "T1190 - Exploit Public-Facing Application"
+      ],
+      "compliance": [
+        {
+          "framework": "PCI-DSS 4.0",
+          "control_id": "Req 6.2.4",
+          "name": "Software Security Flaws"
+        },
+        {
+          "framework": "HIPAA",
+          "control_id": "\u00a7 164.312(c)(1)",
+          "name": "Data Integrity"
+        },
+        {
+          "framework": "GDPR",
+          "control_id": "Article 32",
+          "name": "Security of Processing"
+        },
+        {
+          "framework": "ISO 27001",
+          "control_id": "A.8.8",
+          "name": "Management of Technical Vulnerabilities"
+        }
+      ],
+      "risk_score": 8.8,
+      "business_impact": 10.0,
+      "exploitability": 5.0,
+      "priority": "Immediate (within 24 hours)",
+      "sla_days": 1,
+      "scanner": "Burp Suite Professional",
+      "status": "New",
+      "discovered_date": "2026-08-17T23:32:01.057642"
+    },
+    {
+      "id": "ssrf-aws-metadata",
+      "fingerprint": "e5a5e25cdedb9d17",
+      "name": "AWS EC2 Instance Metadata SSRF Leak",
+      "description": "Server-Side Request Forgery allows accessing AWS IMDSv1 internal endpoint at http://169.254.169.254/latest/meta-data/",
+      "severity": "Critical",
+      "confidence": "Certain",
+      "cvss_score": 9.1,
+      "cvss_vector": null,
+      "cve_ids": [
+        "CVE-2020-11022"
+      ],
+      "cwe_ids": [
+        "CWE-918"
+      ],
+      "url": "https://api.acme.com/proxy?url=http://169.254.169.254/latest/meta-data/iam/security-credentials/",
+      "host": "api.acme.com",
+      "port": null,
+      "parameter": null,
+      "method": null,
+      "payload": null,
+      "proof_of_concept": "Curl Command:\ncurl -X GET 'https://api.acme.com/proxy?url=http://169.254.169.254/latest/meta-data/iam/security-credentials/'\n\nExtracted Findings:\nAccessKeyId: ASIAIOSFODNN7EXAMPLE, SecretAccessKey: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+      "remediation": "Enforce IMDSv2 and restrict outbound HTTP requests to internal cloud metadata endpoints.",
+      "references": [
+        "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html"
+      ],
+      "owasp_category": "A01:2025 - Broken Access Control",
+      "owasp_2021_category": "A01:2021 - Broken Access Control",
+      "mitre_tactics": [
+        "Lateral Movement",
+        "Discovery"
+      ],
+      "mitre_techniques": [
+        "T1557 - Adversary-in-the-Middle",
+        "T1046 - Network Service Discovery"
+      ],
+      "compliance": [
+        {
+          "framework": "PCI-DSS 4.0",
+          "control_id": "Req 6.4.1",
+          "name": "Web Application Protection"
+        },
+        {
+          "framework": "PCI-DSS 4.0",
+          "control_id": "Req 7.2.1",
+          "name": "Access Control System"
+        },
+        {
+          "framework": "HIPAA",
+          "control_id": "\u00a7 164.312(a)(1)",
+          "name": "Access Control"
+        },
+        {
+          "framework": "GDPR",
+          "control_id": "Article 32",
+          "name": "Security of Processing"
+        },
+        {
+          "framework": "ISO 27001",
+          "control_id": "A.8.2",
+          "name": "Privileged Access Rights"
+        }
+      ],
+      "risk_score": 8.1,
+      "business_impact": 7.0,
+      "exploitability": 7.0,
+      "priority": "Immediate (within 24 hours)",
+      "sla_days": 1,
+      "scanner": "Nuclei Vulnerability Scanner",
+      "status": "New",
+      "discovered_date": "2026-08-17T23:32:01.057977"
+    },
+    {
+      "id": "BURP-1001",
+      "fingerprint": "e046a48aed13b910",
+      "name": "Broken Object Level Authorization (BOLA / IDOR)",
+      "description": "By modifying the user ID parameter from 1024 to 1025, the application returns sensitive PII records of another tenant user without authentication errors.\n\nThe application fails to enforce object-level authorization checks when accessing user profiles via numeric ID parameters.",
+      "severity": "High",
+      "confidence": "Certain",
+      "cvss_score": 7.5,
+      "cvss_vector": null,
+      "cve_ids": [],
+      "cwe_ids": [
+        "CWE-639"
+      ],
+      "url": "https://api.acme.com/api/v1/users/1024/profile",
+      "host": "https://api.acme.com",
+      "port": null,
+      "parameter": "id",
+      "method": "GET",
+      "payload": null,
+      "proof_of_concept": null,
+      "remediation": "Enforce server-side authorization checks on all REST endpoints.\n\nImplement proper access control checks validating that the authenticated user owns the requested object ID.",
+      "references": [],
+      "owasp_category": "A01:2025 - Broken Access Control",
+      "owasp_2021_category": "A01:2021 - Broken Access Control",
+      "mitre_tactics": [
+        "Initial Access",
+        "Execution",
+        "Privilege Escalation",
+        "Lateral Movement",
+        "Credential Access"
+      ],
+      "mitre_techniques": [
+        "T1059 - Command and Scripting Interpreter",
+        "T1068 - Exploitation for Privilege Escalation",
+        "T1190 - Exploit Public-Facing Application",
+        "T1110 - Brute Force",
+        "T1078 - Valid Accounts",
+        "T1083 - File and Directory Discovery"
+      ],
+      "compliance": [
+        {
+          "framework": "PCI-DSS 4.0",
+          "control_id": "Req 6.4.1",
+          "name": "Web Application Protection"
+        },
+        {
+          "framework": "PCI-DSS 4.0",
+          "control_id": "Req 7.2.1",
+          "name": "Access Control System"
+        },
+        {
+          "framework": "HIPAA",
+          "control_id": "\u00a7 164.312(a)(1)",
+          "name": "Access Control"
+        },
+        {
+          "framework": "GDPR",
+          "control_id": "Article 32",
+          "name": "Security of Processing"
+        },
+        {
+          "framework": "ISO 27001",
+          "control_id": "A.8.2",
+          "name": "Privileged Access Rights"
+        },
+        {
+          "framework": "PCI-DSS 4.0",
+          "control_id": "Req 6.2.4",
+          "name": "Software Security Flaws"
+        },
+        {
+          "framework": "HIPAA",
+          "control_id": "\u00a7 164.312(c)(1)",
+          "name": "Data Integrity"
+        },
+        {
+          "framework": "GDPR",
+          "control_id": "Article 32",
+          "name": "Security of Processing"
+        },
+        {
+          "framework": "ISO 27001",
+          "control_id": "A.8.8",
+          "name": "Management of Technical Vulnerabilities"
+        },
+        {
+          "framework": "PCI-DSS 4.0",
+          "control_id": "Req 8.2.1",
+          "name": "User Authentication"
+        },
+        {
+          "framework": "HIPAA",
+          "control_id": "\u00a7 164.312(d)",
+          "name": "Person/Entity Authentication"
+        },
+        {
+          "framework": "ISO 27001",
+          "control_id": "A.8.5",
+          "name": "Secure Authentication"
+        }
+      ],
+      "risk_score": 7.4,
+      "business_impact": 9.0,
+      "exploitability": 5.0,
+      "priority": "High Priority (within 7 days)",
+      "sla_days": 7,
+      "scanner": "Burp Suite Professional",
+      "status": "New",
+      "discovered_date": "2026-08-17T23:32:01.057606"
+    },
+    {
+      "id": "missing-hsts-header",
+      "fingerprint": "d4e5b2c770030332",
+      "name": "Missing Strict-Transport-Security (HSTS) Header",
+      "description": "HTTP Strict Transport Security header is missing, allowing potential Man-in-the-Middle SSL stripping attacks.",
+      "severity": "Low",
+      "confidence": "Firm",
+      "cvss_score": 3.4,
+      "cvss_vector": null,
+      "cve_ids": [],
+      "cwe_ids": [
+        "CWE-523"
+      ],
+      "url": "https://app.acme.com",
+      "host": "",
+      "port": null,
+      "parameter": null,
+      "method": null,
+      "payload": null,
+      "proof_of_concept": null,
+      "remediation": "Configure HTTP Strict-Transport-Security response header with max-age >= 31536000 and includeSubDomains.",
+      "references": [],
+      "owasp_category": "A04:2025 - Cryptographic Failures",
+      "owasp_2021_category": "A02:2021 - Cryptographic Failures",
+      "mitre_tactics": [
+        "Initial Access"
+      ],
+      "mitre_techniques": [
+        "T1190 - Exploit Public-Facing Application"
+      ],
+      "compliance": [
+        {
+          "framework": "PCI-DSS 4.0",
+          "control_id": "Req 2.2.1",
+          "name": "System Configuration Standards"
+        },
+        {
+          "framework": "HIPAA",
+          "control_id": "\u00a7 164.308(a)(1)",
+          "name": "Risk Management"
+        },
+        {
+          "framework": "ISO 27001",
+          "control_id": "A.8.9",
+          "name": "Configuration Management"
+        },
+        {
+          "framework": "PCI-DSS 4.0",
+          "control_id": "Req 4.2.1",
+          "name": "Strong Cryptography"
+        },
+        {
+          "framework": "HIPAA",
+          "control_id": "\u00a7 164.312(e)(1)",
+          "name": "Transmission Security"
+        },
+        {
+          "framework": "GDPR",
+          "control_id": "Article 32(1)(a)",
+          "name": "Pseudonymisation and Encryption"
+        },
+        {
+          "framework": "ISO 27001",
+          "control_id": "A.8.24",
+          "name": "Use of Cryptography"
+        }
+      ],
+      "risk_score": 4.2,
+      "business_impact": 5.0,
+      "exploitability": 5.0,
+      "priority": "Low Priority (within 30 days)",
+      "sla_days": 30,
+      "scanner": "Nuclei Vulnerability Scanner",
+      "status": "New",
+      "discovered_date": "2026-08-17T23:32:01.058005"
+    }
+  ]
+}

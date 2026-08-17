@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<NessusClientData_v2>
+  <Report name="Nessus Perimeter Scan">
+    <ReportHost name="192.168.1.50">
+      <HostProperties>
+        <tag name="host-ip">192.168.1.50</tag>
+        <tag name="operating-system">Linux Kernel 4.15</tag>
+      </HostProperties>
+      <ReportItem port="443" svc_name="https" protocol="tcp" pluginID="51192" pluginName="SSL / TLS Weak Cipher Suites Supported" pluginFamily="General" severity="2">
+        <description>The remote service supports the use of weak SSL/TLS cipher suites that utilize 64-bit block ciphers or DES/3DES.</description>
+        <solution>Disable 64-bit ciphers and weak TLS 1.0/1.1 protocols. Enable TLS 1.2 / TLS 1.3 with AES-GCM or ChaCha20-Poly1305.</solution>
+        <synopsis>Weak cryptography enabled on TLS endpoint.</synopsis>
+        <plugin_output>Supported ciphers: TLS1_CK_RSA_WITH_3DES_EDE_CBC_SHA</plugin_output>
+        <cwe>CWE-327</cwe>
+        <cvss3_base_score>5.3</cvss3_base_score>
+      </ReportItem>
+    </ReportHost>
+  </Report>
+</NessusClientData_v2>
