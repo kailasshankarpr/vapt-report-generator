@@ -1,10 +1,10 @@
-# 🛡️ Real-World Penetration Testing & Enterprise Deployment Guide
+# Real-World Penetration Testing & Enterprise Deployment Guide
 
 This guide outlines how to integrate and deploy the **VAPT Report Generator** tool in real-world security testing engagements, enterprise SOC environments, and bug bounty workflows.
 
 ---
 
-## 📋 End-to-End Pentest Workflow
+## End-to-End Pentest Workflow
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -45,7 +45,7 @@ This guide outlines how to integrate and deploy the **VAPT Report Generator** to
 
 ---
 
-## 🛠️ Step-by-Step Execution Examples
+## Step-by-Step Execution Examples
 
 ### 1. Nmap Network & Vulnerability Reconnaissance
 Run Nmap service version detection and NSE vulnerability scripts against target IP ranges:
@@ -74,7 +74,7 @@ nuclei -list targets.txt -t cves/,vulnerabilities/,misconfiguration/ -json-expor
 
 ---
 
-## 🚀 Running the Web UI Server in Production
+## Running the Web UI Server in Production
 
 To host the Web UI for your security team on Kali or a centralized internal Linux server:
 
@@ -90,7 +90,7 @@ Access the dashboard at `http://<KALI_IP_OR_HOSTNAME>:8000`.
 
 ---
 
-## 🤖 CI/CD & DevSecOps Pipeline Automation
+## CI/CD & DevSecOps Pipeline Automation
 
 Integrate report generation directly into GitHub Actions or GitLab CI/CD pipelines to block builds on Critical findings:
 

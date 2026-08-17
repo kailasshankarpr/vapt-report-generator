@@ -1,151 +1,111 @@
-# 🛡️ VAPT Report Generator
+# VAPT Report Generator
 
-An enterprise-grade, modular Python tool and library designed to ingest, normalize, deduplicate, classify, risk-score, and generate professional security assessment reports (**HTML**, **PDF**, **DOCX**, **JSON**) from multiple vulnerability scanner sources.
+A modular Python framework and CLI tool for parsing, deduplicating, classifying, and reporting vulnerability assessment & penetration testing (VAPT) scan results.
 
----
+Supports multi-scanner data ingestion (**Burp Suite**, **Nmap**, **Nuclei**, **Nessus**, and **Custom JSON/CSV**), mapping to **OWASP Top 10:2025** and **MITRE ATT&CK**, risk scoring, compliance auditing, and multi-format report exports (**HTML**, **PDF**, **DOCX**, **JSON**).
 
-## 🌟 Key Features
-
-- **Multi-Scanner Ingestion**: Built-in support for:
-  - **Burp Suite XML** *(with automatic base64 payload decoding)*
-  - **Nmap XML** *(open ports, services, banners, and NSE scripts like `vulners`)*
-  - **Nuclei JSON / JSONL** *(matches, extracted findings, curl PoCs)*
-  - **Tenable Nessus XML** *(`.nessus` v2 format)*
-  - **Custom JSON / CSV & FlowGraph-VAPT** format
-- **Smart Deduplication Engine**: Automatically merges overlapping findings across multiple tool outputs based on fingerprint hashing (Host/URL + Vulnerability Vector + CVE/CWE).
-- **OWASP Top 10:2025 Framework**: Standardized taxonomy mapping to the official **OWASP Top 10:2025** categories (including `A03:2025 Software Supply Chain Failures` & `A10:2025 Mishandling of Exceptional Conditions`), with OWASP 2021 backward compatibility.
-- **MITRE ATT&CK Mapping**: Automatic tagging of MITRE ATT&CK Tactics *(Initial Access, Privilege Escalation, Credential Access, etc.)* and Techniques *(T1190, T1059, T1557, T1110, T1078)*.
-- **Compliance Mapping Engine**: Automated rule-based cross-referencing against:
-  - **PCI-DSS 4.0** *(Req 6.2, 6.4, 8.2, 11.3)*
-  - **HIPAA Security Rule** *(§ 164.312 Access/Transmission Controls, § 164.308 Risk Management)*
-  - **GDPR** *(Article 32 Security of Processing)*
-  - **ISO/IEC 27001:2022** *(Control A.8.8 Technical Vulnerabilities, A.8.20 Network Security, A.8.24 Cryptography)*
-- **Historical Trend Analysis & Delta Engine**: Compares current findings against a previous scan JSON report to track `NEW`, `RECURRING`, `RESOLVED`, and `REGRESSED` issues over time.
-- **C-Level Executive Dashboard**: Computes overall security posture letter grade (A+ to F), CVSS risk scores, compliance readiness percentages, and remediation SLAs (24h to 90d).
-- **Multi-Format Exporters**:
-  - **HTML**: Standalone interactive single-file dashboard with dark/light mode toggle, search bar, filter tabs, and responsive UI.
-  - **PDF**: Pixel-perfect standalone PDF generation powered by `reportlab` (no external `wkhtmltopdf` binaries required).
-  - **DOCX**: Editable Microsoft Word document with styled tables and callout boxes.
-  - **JSON**: Machine-readable format for automation & CI/CD pipeline integration.
+Includes both a CLI tool and a browser-based Web UI dashboard for drag-and-drop report generation.
 
 ---
 
-## 📁 Project Architecture
+## Features
 
-```
-vapt-report-generator/
-├── config/
-│   └── report_config.yaml         # Branding, colors, thresholds, SLA rules
-├── samples/
-│   ├── burp_sample.xml            # Sample Burp Suite XML report
-│   ├── nmap_sample.xml            # Sample Nmap XML scan output
-│   ├── nuclei_sample.json         # Sample Nuclei scan results (JSON/JSONL)
-│   ├── nessus_sample.xml          # Sample Nessus XML scan
-│   ├── custom_sample.json         # Custom vulnerability array
-│   └── previous_report.json       # Historical scan JSON for trend testing
-├── src/
-│   ├── cli.py                     # Command-line interface
-│   ├── core/
-│   │   ├── report_engine.py       # Main pipeline orchestrator
-│   │   ├── data_processor.py      # Normalizer, deduplicator & text sanitizer
-│   │   ├── classifier.py          # OWASP Top 10:2025, MITRE ATT&CK tagger
-│   │   ├── compliance.py          # Regulatory Compliance Mapper
-│   │   ├── trend_analyzer.py      # Historical Report Comparator & Delta Engine
-│   │   └── risk_scorer.py         # CVSS, Impact, Exploitability & SLA calculator
-│   ├── models/
-│   │   └── vulnerability.py       # Core data models: Vulnerability, ScanReport, Severity
-│   ├── parsers/
-│   │   ├── burp_parser.py         # Burp XML parser (base64 supported)
-│   │   ├── nmap_parser.py         # Nmap XML & NSE script parser
-│   │   ├── nuclei_parser.py       # Nuclei JSON / JSONL parser
-│   │   ├── nessus_parser.py       # Nessus v2 XML parser
-│   │   └── custom_parser.py       # Custom JSON/CSV parser
-│   ├── exporters/
-│   │   ├── html_exporter.py       # Interactive Jinja2 HTML exporter
-│   │   ├── pdf_exporter.py        # ReportLab standalone PDF exporter
-│   │   ├── docx_exporter.py       # Microsoft Word exporter
-│   │   └── json_exporter.py       # Machine-readable JSON exporter
-│   └── templates/
-│       ├── report.html            # Main HTML report Jinja2 template
-│       └── styles.css             # Embedded CSS stylesheet
-├── tests/                         # Unit tests
-├── quick_start.py                 # Quick demonstration script
-├── requirements.txt               # Dependencies
-└── setup.py                       # Package installation script
-```
+- **Multi-Scanner Parser Support**:
+  - **Burp Suite XML**: Parses issue details, request/response pairs, and decodes base64 payloads.
+  - **Nmap XML**: Normalizes open ports, service banners, and NSE vulnerability scripts (`vulners`).
+  - **Nuclei JSON / JSONL**: Ingests template IDs, target URLs, severity, and curl PoC commands.
+  - **Tenable Nessus XML**: Native `.nessus` v2 file parsing.
+  - **Custom JSON / CSV**: Standardized schema for custom scripts or internal scanner exports.
+- **Smart Fingerprint Deduplication**: Hashes Host/URL + Vulnerability Title + Target Vector to merge overlapping findings across scanners.
+- **OWASP Top 10:2025 Standard**: Maps findings against the OWASP Top 10:2025 taxonomy (`A01:2025` through `A10:2025`) with legacy 2021 cross-referencing.
+- **MITRE ATT&CK Tagging**: Tags findings with relevant Tactics (*Initial Access*, *Execution*, *Privilege Escalation*) and Techniques (`T1190`, `T1059.007`, `T1189`, `T1110`).
+- **Regulatory Compliance Auditing**: Rule-based mapping against **PCI-DSS 4.0**, **HIPAA Security Rule**, **GDPR Article 32**, and **ISO/IEC 27001:2022**.
+- **Historical Scan Trend Delta**: Compares current assessment results against a previous scan JSON to mark findings as `NEW`, `RECURRING`, `RESOLVED`, or `REGRESSED`.
+- **Multi-Format Deliverables**:
+  - **HTML**: Self-contained responsive dashboard with dark/light mode, live search, and filter tabs.
+  - **PDF**: Standalone PDF reports generated via `reportlab` (no external `wkhtmltopdf` binary dependency).
+  - **DOCX**: Formatted Word document for manual editing and executive delivery.
+  - **JSON**: Machine-readable JSON output for Jira / DefectDojo / CI-CD pipeline integration.
 
 ---
 
-## ⚡ Quick Start
-
-### 1. Installation
+## Installation
 
 ```bash
-# Clone or navigate to directory
-cd C:\Users\kaila\.gemini\antigravity\scratch\vapt-report-generator
+git clone https://github.com/kailasshankarpr/vapt-report-generator.git
+cd vapt-report-generator
+
+# Create virtual environment
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 ```
 
-### 2. Run Demo Report Generation
-
-Generate full interactive HTML, PDF, DOCX, and JSON reports instantly using sample scan data:
-
-```bash
-python quick_start.py
-```
-
-Outputs will be saved to `output/vapt_report.html`, `output/vapt_report.pdf`, etc.
-
 ---
 
-## 🚀 CLI Usage Guide
+## Quick Usage
 
-### Generate Report from Single Tool
+### Option 1: Web UI Dashboard
+
+Launch the local web dashboard server:
 
 ```bash
-python -m src.cli generate -i samples/burp_sample.xml -t burp -o report.html -f html
+python3 quick_web.py
+# or: python3 -m src.cli serve
 ```
 
-### Generate PDF Report from Multiple Tool Scans
+Open **`http://localhost:8000`** in your browser, drag and drop scanner files, enter target details, and generate reports live.
+
+### Option 2: Command Line Interface (CLI)
+
+Generate an HTML report from a single scanner file:
 
 ```bash
-python -m src.cli generate \
+python3 -m src.cli generate -i samples/burp_sample.xml -t burp -o report.html -f html
+```
+
+Combine multiple scanner outputs into a single PDF report:
+
+```bash
+python3 -m src.cli generate \
   -i samples/burp_sample.xml -t burp \
   -i samples/nmap_sample.xml -t nmap \
   -i samples/nuclei_sample.json -t nuclei \
   --client "Acme Corp" \
-  --project "Q3 Pentest Audit" \
-  -o report.pdf -f pdf
+  --project "Q3 Full Scope VAPT Audit" \
+  -o executive_report.pdf -f pdf
 ```
 
-### Generate Report with Historical Trend Comparison
+Generate a report with trend comparison against a previous scan:
 
 ```bash
-python -m src.cli generate \
-  -i samples/burp_sample.xml -t burp \
+python3 -m src.cli generate \
+  -i samples/nuclei_sample.json -t nuclei \
   -p samples/previous_report.json \
   -o trend_report.html -f html
 ```
 
-### CLI Options Reference
+---
 
-| Flag | Long Flag | Description | Default |
+## CLI Options
+
+| Flag | Argument | Description | Default |
 | --- | --- | --- | --- |
-| `-i` | `--input` | Input scanner file path (can be passed multiple times) | **Required** |
+| `-i` | `--input` | Path to scanner output file (can be specified multiple times) | **Required** |
 | `-t` | `--type` | Scanner format (`burp`, `nmap`, `nuclei`, `nessus`, `custom`, `csv`) | **Required** |
 | `-o` | `--output` | Destination output file path | `vapt_report.html` |
 | `-f` | `--format` | Output format (`html`, `pdf`, `docx`, `json`) | `html` |
-| `-p` | `--previous`| Path to previous report JSON for trend comparison | `None` |
-| `--client` | `--client` | Target client organization name | `Acme Enterprise Corp` |
-| `--project`| `--project`| Project / Assessment title | `Q3 Security Audit` |
+| `-p` | `--previous` | Path to previous report JSON for trend delta analysis | `None` |
+| `--client` | `--client` | Target client or organization name | `Acme Enterprise Corp` |
+| `--project` | `--project` | Assessment project title | `Q3 Security Audit` |
 
 ---
 
-## 🐍 Python API Integration (e.g. FlowGraph-VAPT)
+## Python API Usage
 
-You can import `ReportEngine` directly into your Python security tools:
+You can import `ReportEngine` directly into your custom tools or automation scripts:
 
 ```python
 from src.core.report_engine import ReportEngine
@@ -153,20 +113,69 @@ from src.exporters import HTMLExporter, PDFExporter
 
 engine = ReportEngine()
 
-# 1. Parse raw scanner outputs
-raw_vulnerabilities = engine.load_sources([
+# Load raw scanner files
+vulnerabilities = engine.load_sources([
     {'path': 'scans/burp.xml', 'type': 'burp'},
     {'path': 'scans/nuclei.json', 'type': 'nuclei'}
 ])
 
-# 2. Process pipeline & construct report
+# Execute pipeline (normalize, deduplicate, classify, compliance, trend)
 report = engine.create_report(
-    raw_vulnerabilities,
+    vulnerabilities,
     client_name="Acme Corp",
-    project_name="API Pentest"
+    project_name="Web Application Security Audit"
 )
 
-# 3. Export to desired format
-HTMLExporter().export(report, "final_report.html")
-PDFExporter().export(report, "final_report.pdf")
+# Export deliverables
+HTMLExporter().export(report, "report.html")
+PDFExporter().export(report, "report.pdf")
 ```
+
+---
+
+## Project Structure
+
+```
+vapt-report-generator/
+├── config/
+│   └── report_config.yaml         # Branding, SLA rules, and compliance mappings
+├── samples/                       # Test sample scanner files
+│   ├── burp_sample.xml
+│   ├── nmap_sample.xml
+│   ├── nuclei_sample.json
+│   ├── nessus_sample.xml
+│   └── previous_report.json
+├── src/
+│   ├── cli.py                     # CLI entrypoint
+│   ├── core/                      # Core processing pipeline engine
+│   │   ├── report_engine.py       # Main orchestrator
+│   │   ├── data_processor.py      # Normalizer & deduplicator
+│   │   ├── classifier.py          # OWASP 2025 & MITRE ATT&CK tagger
+│   │   ├── compliance.py          # Regulatory mapper (PCI-DSS, HIPAA, GDPR, ISO)
+│   │   ├── trend_analyzer.py      # Trend delta comparator
+│   │   └── risk_scorer.py         # CVSS & SLA calculator
+│   ├── models/                    # Data models (Pydantic / dataclasses)
+│   ├── parsers/                   # Scanner output parsers
+│   ├── exporters/                 # Output exporters (HTML, PDF, DOCX, JSON)
+│   └── web/                       # FastAPI web dashboard UI
+├── tests/                         # Unit test suite
+├── quick_start.py                 # Quick CLI test script
+├── quick_web.py                   # Web dashboard launcher script
+└── requirements.txt               # Dependencies
+```
+
+---
+
+## Running Unit Tests
+
+Run the test suite to verify parsers and pipeline functionality:
+
+```bash
+python3 -m unittest discover -s tests
+```
+
+---
+
+## License
+
+Distributed under the MIT License. See `LICENSE` for details.
