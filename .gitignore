@@ -1,0 +1,28 @@
+# Virtual environments
+venv/
+.venv/
+env/
+.venvs/
+
+# Python cache & build files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+build/
+dist/
+*.egg-info/
+
+# Ignore root-level raw scan outputs and generated test reports
+output/
+output_test/
+nmap_real.xml
+nuclei_real.json
+*.log
+
+# OS & IDE metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

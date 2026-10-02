@@ -1,0 +1,15 @@
+[
+  {
+    "id": "FLOWGRAPH-001",
+    "name": "Hardcoded JWT Secret Key in Public Repository",
+    "description": "FlowGraph static security inspection detected a static HS256 JWT secret key hardcoded in application configuration file server.js.",
+    "severity": "High",
+    "url": "https://github.com/acme-org/backend-service/blob/main/config/server.js#L14",
+    "parameter": "JWT_SECRET",
+    "remediation": "Move JWT signing secret to environment variables or enterprise secret store (e.g., HashiCorp Vault / AWS Secrets Manager).",
+    "proof_of_concept": "const JWT_SECRET = 'secret12345!#$'; // Hardcoded secret detected",
+    "cve_ids": ["CVE-2022-23529"],
+    "cwe_ids": ["CWE-798"],
+    "scanner": "FlowGraph-VAPT Analyzer"
+  }
+]
